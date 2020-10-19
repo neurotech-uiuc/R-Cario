@@ -107,11 +107,12 @@ def fftData(x, y, N):
 
 
 # plotFFT(rawDataLocs[0], 0)
-path = "../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-00-28-YAN-LEFT-FOOT/OpenBCI-RAW-2020-10-11_16-01-30.txt"
-label_path = "../Recordings/Labels/yanLeftFoot.txt.txt"
+path = "./Recordings-main/Fall_2020/OpenBCISession_2020-10-11_16-00-28-YAN-LEFT-FOOT/OpenBCI-RAW-2020-10-11_16-01-30.txt"
+label_path = "Recordings-main/Labels/yanLeftFoot.txt.txt"
 interval = 1000
 data = getData(path, None, 0, None)
 action_times = getLabel(label_path)
 #grouped_data: (x_groups, y_groups, t_groups)
 grouped_data, group_contains_label = groupbyInterval(data, action_times, interval)
-grouped_data[2][group_contains_label][0]
+
+print(grouped_data[2][group_contains_label][0])

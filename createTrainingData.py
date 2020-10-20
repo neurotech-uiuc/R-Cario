@@ -52,6 +52,8 @@ def groupbyInterval(data, labels, interval):
   x,y,t = data
   interval_ms = timedelta(milliseconds=interval)
   
+  #split_inds is a list of indices that splits the dataset into intervals (currently thinking 1 second)
+  #cutoff_times is a list of the cutoff times of each interval
   split_inds = []
   cutoff_times = [t[0]+interval_ms]
   for ind in range(len(t)):
@@ -60,11 +62,14 @@ def groupbyInterval(data, labels, interval):
       split_inds.append(ind)
       cutoff_times.append(cutoff_times[-1] + interval_ms)
   
+  #x,y,t (index, channels, timestamps) are split based on the split indices created above
   x_groups = np.array(np.split(x, split_inds))
   y_groups = np.array(np.split(y, split_inds))
   t_groups = np.array(np.split(t, split_inds))
+  #l_groups is an array that has a 1 corresponding to an interval during which an action was performed and 0 otherwise
   l_groups = np.zeros(len(x_groups), dtype=bool)
   
+  #lnum is a counter to iterate through all the labels and check if they exist in a particular interval
   lnum=0
   for ind in range(len(cutoff_times)):
     if lnum==len(labels):
@@ -115,4 +120,5 @@ action_times = getLabel(label_path)
 #grouped_data: (x_groups, y_groups, t_groups)
 grouped_data, group_contains_label = groupbyInterval(data, action_times, interval)
 
-print(grouped_data[2][group_contains_label][0])
+# print(grouped_data[2][group_contains_label][0])
+print(group_contains_label)

@@ -69,3 +69,5 @@ for move_time in move_times:
 		channel_avgs[i].append(np.mean(channel_vals[i]))
 
 channel_avgs = np.array(channel_avgs)
+
+

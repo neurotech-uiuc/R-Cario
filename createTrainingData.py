@@ -121,4 +121,5 @@ action_times = getLabel(label_path)
 grouped_data, group_contains_label = groupbyInterval(data, action_times, interval)
 
 # print(grouped_data[2][group_contains_label][0])
-print(group_contains_label)
+print(len(group_contains_label))
+print(grouped_data[1].shape)

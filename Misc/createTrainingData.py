@@ -105,6 +105,26 @@ def fftData(x, y, N):
 	return xf, yf, N
 
 
+def standardise_observations(grouped_data, group_contains_label):
+	x_groups,y_groups,t_groups = grouped_data
+	l_groups = group_contains_label
+
+	i = 0
+	while i < len(y_groups):
+		if len(y_groups[i]) < 190:
+			x_groups = np.delete(x_groups, i)
+			y_groups = np.delete(y_groups, i)
+			t_groups = np.delete(t_groups, i)
+			l_groups = np.delete(l_groups, i)
+		else:
+			i = i+1
+
+	for i in range(len(x_groups)):
+		x_groups[i] = x_groups[i][:190]
+		y_groups[i] = y_groups[i][:190]
+		t_groups[i] = t_groups[i][:190]
+
+	return (x_groups, y_groups, t_groups), l_groups
 
 channel = 0
 
@@ -119,9 +139,13 @@ action_times = getLabel(label_path)
 grouped_data, group_contains_label = groupbyInterval(data, action_times, interval)
 # grouped_data[2][group_contains_label][0]
 
+grouped_data, group_contains_label = standardise_observations(grouped_data, group_contains_label)
+
 
 y_groups = grouped_data[1]
+t_groups = grouped_data[2]
 l_groups = group_contains_label
+
 
 # print((y_groups))
 # print(len(l_groups))
@@ -181,5 +205,5 @@ print("Std of Avgs of Channel 0: ", np.std(actionAvgsArr))
 print("Std of Avgs of Channel 0: ", np.std(noActionAvgsArr))
 # print(noActionOccured)
 
-for obs in y_groups:
-	print(len(obs))
+# for obs in y_groups:
+# 	print(len(obs))

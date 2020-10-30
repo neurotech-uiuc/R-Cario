@@ -93,14 +93,15 @@ def return_millisecond_timestamps(labels):
 
 def standardise_observations(grouped_data, group_contains_label):
 
-	REQ_NUM_OBS = 190
+	REQ_NUM_PTS = 190
 
 	x_groups,y_groups,t_groups = grouped_data
 	l_groups = group_contains_label
 
+	#remove all instances where not enough sample pints
 	i = 0
 	while i < len(y_groups):
-		if len(y_groups[i]) < REQ_NUM_OBS:
+		if len(y_groups[i]) < REQ_NUM_PTS:
 			x_groups = np.delete(x_groups, i)
 			y_groups = np.delete(y_groups, i)
 			t_groups = np.delete(t_groups, i)
@@ -108,10 +109,11 @@ def standardise_observations(grouped_data, group_contains_label):
 		else:
 			i = i+1
 
+	# limit to required observations
 	for i in range(len(x_groups)):
-		x_groups[i] = x_groups[i][:REQ_NUM_OBS]
-		y_groups[i] = y_groups[i][:REQ_NUM_OBS]
-		t_groups[i] = t_groups[i][:REQ_NUM_OBS]
+		x_groups[i] = x_groups[i][:REQ_NUM_PTS]
+		y_groups[i] = y_groups[i][:REQ_NUM_PTS]
+		t_groups[i] = t_groups[i][:REQ_NUM_PTS]
 
 	return (x_groups, y_groups, t_groups), l_groups
 

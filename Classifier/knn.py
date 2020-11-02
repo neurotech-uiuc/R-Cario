@@ -1,36 +1,41 @@
 import classify as classify
+
+import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
-import numpy as np
 
 class KNN(classify.Classifier):
-    model = KNeighborsClassifier(n_neighbors=3)
+    def __init__(self):
+        self.model = KNeighborsClassifier(n_neighbors=3)
 
     def train(self, trainingData):
       	# trainingData -> (c0, c1, c2) -> (x_groups, y_groups, t_groups), l_groups -> each group is 1 sec w 190 rows
-        
-        channel_0 = trainingData[0]
-        channel_1 = trainingData[1]
-        channel_2 = trainingData[2]
-        
-        
-        y_0 = np.array([interval.mean() for interval in channel_0[0][1]])
-        y_1 = np.array([interval.mean() for interval in channel_1[0][1]])
-        y_2 = np.array([interval.mean() for interval in channel_2[0][1]])
-        labels = channel_0[1]
 
-        X = np.stack((y_0, y_1, y_2), axis=-1)
-        y = labels 
-        
-        X = np.mean(X, axis=1)
+        # channel_y: 3 channel list -> (? intervals, 190 recordings/interval)
+        channel_y_list = [np.stack(channel[0][1]) for channel in trainingData.values()]
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
-
-        model = KNeighborsClassifier(n_neighbors=3)
-        model.fit(X_train.reshape(-1,1), y_train.reshape(-1,1))
+        # channel_data: (? intervals, 190 readings/interval, 3 channels)
+        channel_data = np.stack(channel_y_list, axis=-1)
         
-        results = model.predict(X_test.reshape(-1,1))
-        accuracy = (results == y_test).mean()
+        # channel_means: (? meaned intervals, 3 channels)
+        channel_means = channel_data.mean(axis=1)
+        
+        train_size = int(0.7*X.shape[0])
+        #means are normalized only on training data
+        #labels across channels should be identical
+        X = channel_means/channel_means[:train_size].std(axis=0)
+        y = trainingData[0][1]
+  
+        
+        X_train, X_test = np.split(X, [train_size])
+        y_train, y_test = np.split(y, [train_size])
+
+        
+        model.fit(X_train, y_train)
+
+        results = model.predict(X_test)
+        accuracy = (results==y_test).mean()
+        
         print(accuracy)
 
     def classify(self, observation):

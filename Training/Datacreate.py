@@ -89,8 +89,13 @@ def groupbyInterval(data, labels, interval, actionType):
 	t_groups = np.array(np.split(t, split_inds))
 	# l_groups = np.zeros(len(x_groups), dtype=bool)
 
-	NO_ACTION = getOneHot("NONE")
-	ACTION = getOneHot(actionType)
+	NO_ACTION = 0
+	ACTION = 1
+
+	if actionType:
+		NO_ACTION = getOneHot("NONE")
+		ACTION = getOneHot(actionType)
+		
 	l_groups = np.array([NO_ACTION] * len(x_groups))
 	
 	lnum=0

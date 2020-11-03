@@ -6,13 +6,36 @@ from string import digits
 from datetime import datetime, timedelta
 import requests
 
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
 
+# define example
+labels = {'NONE' : 0,  'L_FOOT' : 1, 'R_FOOT' : 2, 'L_EYE' : 3, 'R_EYE' : 4}
+labelInts = np.array([0, 1, 2, 3, 4])
+# integer encode
+label_encoder = LabelEncoder()
+integer_encoded = label_encoder.fit_transform(labelInts)
+# binary encode
+onehot_encoder = OneHotEncoder(sparse=False)
+integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
+onehot_encoded = onehot_encoder.fit_transform(integer_encoded)
+
+def getOneHot(label):
+	return onehot_encoded[labels[label]]
+
+def getOneHotLabels():
+	output = {}
+	for label in labels:
+		output[label] = getOneHot(label)
+	return output
+	
 def getTitle(recordingFile):
 	return recordingFile.split("-")[-1].split(".")[0].translate({ord(k): None for k in digits})
 
 # pass none if dont want granularity
 # pass none to dataLimit if want all the data
 def getData(path, granularity, channel, dataLimit):
+
 	dataRaw = []
 	dataStartLine = 6
 	count = 0
@@ -48,7 +71,7 @@ def getLabel(path):
 	
 		
 	
-def groupbyInterval(data, labels, interval):
+def groupbyInterval(data, labels, interval, actionType):
 	#data tuple (x,y,z). labels: datetimes. interval(ms): int
 	x,y,t = data
 	interval_ms = timedelta(milliseconds=interval)
@@ -64,7 +87,11 @@ def groupbyInterval(data, labels, interval):
 	x_groups = np.array(np.split(x, split_inds))
 	y_groups = np.array(np.split(y, split_inds))
 	t_groups = np.array(np.split(t, split_inds))
-	l_groups = np.zeros(len(x_groups), dtype=bool)
+	# l_groups = np.zeros(len(x_groups), dtype=bool)
+
+	NO_ACTION = getOneHot("NONE")
+	ACTION = getOneHot(actionType)
+	l_groups = np.array([NO_ACTION] * len(x_groups))
 	
 	lnum=0
 	for ind in range(len(cutoff_times)):
@@ -73,9 +100,9 @@ def groupbyInterval(data, labels, interval):
 
 		cutoff_time = cutoff_times[ind]
 		if labels[lnum] < cutoff_time:
-			l_groups[ind] = 1
+			l_groups[ind] = ACTION
 			lnum+=1
-		
+	
 	return (x_groups, y_groups, t_groups), l_groups
 
 
@@ -105,7 +132,7 @@ def standardise_observations(grouped_data, group_contains_label):
 			x_groups = np.delete(x_groups, i)
 			y_groups = np.delete(y_groups, i)
 			t_groups = np.delete(t_groups, i)
-			l_groups = np.delete(l_groups, i)
+			l_groups = np.delete(l_groups, i, 0)
 		else:
 			i = i+1
 
@@ -120,12 +147,12 @@ def standardise_observations(grouped_data, group_contains_label):
 #THIS IS THE MAIN METHOD FOR INTERACTION
 # Inputs:
 # datafile, labelfile, interval, channels requested
-def getObservationSet(dataPath, labelPath, interval, channels):
+def getObservationSet(dataPath, labelPath, interval, channels, actionType):
 	observationSet = {}
 	for channel in channels:
 		data = getData(dataPath, None, channel, None)
 		action_times = getLabel(labelPath)
-		observations = groupbyInterval(data, action_times, interval)
+		observations = groupbyInterval(data, action_times, interval, actionType)
 		observations = standardise_observations(observations[0], observations[1])
 		observationSet[channel] = observations
 	

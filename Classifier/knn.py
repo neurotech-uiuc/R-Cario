@@ -34,12 +34,12 @@ class KNN(classify.Classifier):
             X_train, X_test = np.split(X, [train_size])
             y_train, y_test = np.split(y, [train_size])
 
-            np.append(X_train_all, X_train)
-            np.append(X_test_all, X_test)
-            np.append(y_train_all, y_train)
-            np.append(y_test_all, y_test)
+            X_train_all = np.concatenate((X_train_all, X_train))
+            X_test_all = np.concatenate((X_test_all, X_test))
+            y_train_all = np.concatenate((y_train_all, y_train))
+            y_test_all = np.concatenate((y_test_all, y_test))
 
-        
+        print(X_train_all)
         self.model.fit(X_train_all, y_train_all)
 
         results = self.model.predict(X_test_all)

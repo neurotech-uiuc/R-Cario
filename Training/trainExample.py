@@ -7,17 +7,17 @@ import Datacreate as dc
 import example as model
 # import trainExample as trainer
 
-RightFoot_path = "../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-26-10-YAN-RIGHT-FOOT/OpenBCI-RAW-2020-10-11_16-26-50.txt"
-RightFoot_label_path = "../Recordings/Labels/yanRightFoot"
+RightFoot_path = "../../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-26-10-YAN-RIGHT-FOOT/OpenBCI-RAW-2020-10-11_16-26-50.txt"
+RightFoot_label_path = "../../Recordings/Labels/yanRightFoot"
 
-LeftFoot_path = "../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-26-10-YAN-RIGHT-FOOT/OpenBCI-RAW-2020-10-11_16-26-50.txt"
-LeftFoot_label_path = "../Recordings/Labels/yanLeftFoot.txt.txt"
+LeftFoot_path = "../../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-26-10-YAN-RIGHT-FOOT/OpenBCI-RAW-2020-10-11_16-26-50.txt"
+LeftFoot_label_path = "../../Recordings/Labels/yanLeftFoot.txt.txt"
 
-RightEye_path = "../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-58-40-YAN-RIGHT-EYE/OpenBCI-RAW-2020-10-11_16-59-03.txt"
-RightEye_label_path = "../Recordings/Labels/yanRightEye"
+RightEye_path = "../../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-58-40-YAN-RIGHT-EYE/OpenBCI-RAW-2020-10-11_16-59-03.txt"
+RightEye_label_path = "../../Recordings/Labels/yanRightEye"
 
-LeftEye_path = "../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-33-50-YAN-LEFT-EYE/OpenBCI-RAW-2020-10-11_16-38-59.txt"
-LeftEye_label_path = "../Recordings/Labels/yanLeftEye"
+LeftEye_path = "../../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-33-50-YAN-LEFT-EYE/OpenBCI-RAW-2020-10-11_16-38-59.txt"
+LeftEye_label_path = "../../Recordings/Labels/yanLeftEye"
 
 exampleModel = model.Example("modelFile")
 

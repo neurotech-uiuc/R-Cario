@@ -31,7 +31,6 @@ class KNN(classify.Classifier):
             X = channel_means/channel_means[:train_size].std(axis=0)
             y = trainingData[0][1]
     
-            
             X_train, X_test = np.split(X, [train_size])
             y_train, y_test = np.split(y, [train_size])
 
@@ -53,7 +52,7 @@ class KNN(classify.Classifier):
         onehot_to_int = np.array([0,1,2,3,4])
         flat_y_test = (y_test_all*onehot_to_int).sum(axis=1)
         flat_results = (results*onehot_to_int).sum(axis=1)
-        
+
         # rows represent true value, columns are predicted value
         print(confusion_matrix(flat_y_test, flat_results))
 

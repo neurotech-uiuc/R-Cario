@@ -3,6 +3,7 @@ import classify as classify
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 
 class KNN(classify.Classifier):
     def __init__(self, n):
@@ -48,20 +49,13 @@ class KNN(classify.Classifier):
         self.model.fit(X_train_all, y_train_all)
 
         results = self.model.predict(X_test_all)
-        accuracy = (results==y_test_all).mean()
-        tp = 0
-        tn = 0
-        fp = 0
-        fn = 0
-        
-        print(f'accuracy: {accuracy}')
-        print(f'true positive: {tp}')
-        print(f'true negative: {tn}')
-        print(f'false positive: {fp}')
-        print(f'false negative: {fn}')
 
-        print(self.model.predict(X_test_all).sum(axis=0))
-        print(y_test_all.sum(axis=0))
+        onehot_to_int = np.array([0,1,2,3,4])
+        flat_y_test = (y_test_all*onehot_to_int).sum(axis=1)
+        flat_results = (results*onehot_to_int).sum(axis=1)
+        
+        # rows represent true value, columns are predicted value
+        print(confusion_matrix(flat_y_test, flat_results))
 
     def classify(self, observation):
         pass

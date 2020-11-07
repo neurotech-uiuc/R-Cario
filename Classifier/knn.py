@@ -10,7 +10,12 @@ class KNN(classify.Classifier):
 
     def train(self, trainingSets):
         # make four empty numpy arrays
+<<<<<<< Updated upstream
         X_train_all, X_test_all, y_train_all, y_test_all = [[],[],[],[]]
+=======
+        X_train_all, X_test_all, y_train_all, y_test_all = np.ndarray(4,0,0)
+        print(X_train_all.shape)
+>>>>>>> Stashed changes
         for trainingData in trainingSets:
       	# trainingData -> (c0, c1, c2) -> (x_groups, y_groups, t_groups), l_groups
           #  -> each group is 1 sec w 190 rows
@@ -30,10 +35,10 @@ class KNN(classify.Classifier):
             X = channel_means/channel_means[:train_size].std(axis=0)
             y = trainingData[0][1]
     
-            
             X_train, X_test = np.split(X, [train_size])
             y_train, y_test = np.split(y, [train_size])
 
+<<<<<<< Updated upstream
             X_train_all.append(X_train)
             X_test_all.append(X_test)
             y_train_all.append(y_train)
@@ -45,6 +50,16 @@ class KNN(classify.Classifier):
         y_train_all = np.concatenate(y_train_all)
         y_test_all = np.concatenate(y_test_all)
 
+=======
+            print(X_train.shape)
+            X_train_all = np.concatenate((X_train_all, X_train))
+            print(X_train_all.shape)
+            X_test_all = np.concatenate((X_test_all, X_test))
+            y_train_all = np.concatenate((y_train_all, y_train))
+            y_test_all = np.concatenate((y_test_all, y_test))
+
+        print(X_train_all.shape, y_train_all.shape)
+>>>>>>> Stashed changes
         self.model.fit(X_train_all, y_train_all)
 
         results = self.model.predict(X_test_all)

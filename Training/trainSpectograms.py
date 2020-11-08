@@ -15,20 +15,20 @@ label_path = "../../Recordings/Labels/yanRightFoot"
 
 def train():
     cnn = model.SpectogramCNN("modelFile")
-    observations = dc.getObservationSet(path, label_path, 1000, [0,1,2], "L_FOOT")
+    observations = dc.getObservationSet(path, label_path, 1000, [0,1,2], "R_FOOT")
     
     #do it for each channel
     # channel0 = observations[0]
     # generateTrainingData("SpectogramsData/YanLeftFoot/Channel0/", channel0)
 
-    channel1 = observations[1]
-    generateTrainingData("SpectogramsData/YanLeftFoot/Channel1/", channel1)
+    # channel1 = observations[1]
+    # generateTrainingData("SpectogramsData/YanLeftFoot/Channel1/", channel1)
 
-    channel2 = observations[2]
+    # channel2 = observations[2]
     # generateTrainingData("SpectogramsData/YanLeftFoot/Channel2/", channel2)
 
     # and folder of stuff
-    # cnn.train(observations)
+    cnn.train((observations, ["SpectogramsData/YanLeftFoot/Channel0/", "SpectogramsData/YanLeftFoot/Channel1/", "SpectogramsData/YanLeftFoot/Channel2/"]))
 
 def generateTrainingData(folderName, observations):
     # since they are all the same shape

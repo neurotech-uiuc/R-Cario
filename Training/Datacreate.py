@@ -27,7 +27,9 @@ def getOneHotLabels():
 	output = {}
 	for label in labels:
 		output[label] = getOneHot(label)
-	return output
+	return 
+	
+getOneHotLabels()
 	
 def getTitle(recordingFile):
 	return recordingFile.split("-")[-1].split(".")[0].translate({ord(k): None for k in digits})

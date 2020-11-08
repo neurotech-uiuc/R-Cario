@@ -10,7 +10,7 @@ path = "../../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-26-10-YAN-RIGHT-
 label_path = "../../Recordings/Labels/yanRightFoot"
 
 exampleModel = model.Example("modelFile")
-observations = dc.getObservationSet(path, label_path, 1000, [0,1,2], "L_FOOT")
+observations = dc.getObservationSet(path, label_path, 1000, [0,1,2], "R_FOOT")
 exampleModel.train(observations)
 
 

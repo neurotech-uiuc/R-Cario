@@ -7,7 +7,7 @@ from sklearn.metrics import confusion_matrix
 
 class KNN(classify.Classifier):
     def __init__(self, n):
-        self.model = KNeighborsClassifier(n_neighbors=n)
+        self.model = KNeighborsClassifier(n_neighbors=n, weights='distance')
 
     def train(self, trainingSets):
         # make four empty numpy arrays
@@ -25,7 +25,7 @@ class KNN(classify.Classifier):
             # channel_means: (? meaned intervals, 3 channels)
             channel_means = channel_data.mean(axis=1)
             
-            train_size = int(0.3*channel_means.shape[0])
+            train_size = int(0.5*channel_means.shape[0])
             #means are normalized only on training data
             #labels across channels should be identical
             X = channel_means/channel_means[:train_size].std(axis=0)
@@ -54,7 +54,8 @@ class KNN(classify.Classifier):
         flat_results = (results*onehot_to_int).sum(axis=1)
 
         # rows represent true value, columns are predicted value
-        print(confusion_matrix(flat_y_test, flat_results))
+        self.confusion_matrix = confusion_matrix(flat_y_test, flat_results)
+        print(self.confusion_matrix)
 
     def classify(self, observation):
         pass

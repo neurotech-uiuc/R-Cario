@@ -9,7 +9,7 @@ import knn as model
 RightFoot_path = "../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-26-10-YAN-RIGHT-FOOT/OpenBCI-RAW-2020-10-11_16-26-50.txt"
 RightFoot_label_path = "../Recordings/Labels/yanRightFoot"
 
-LeftFoot_path = "../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-26-10-YAN-RIGHT-FOOT/OpenBCI-RAW-2020-10-11_16-26-50.txt"
+LeftFoot_path = "../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-00-28-YAN-LEFT-FOOT/OpenBCI-RAW-2020-10-11_16-01-30.txt"
 LeftFoot_label_path = "../Recordings/Labels/yanLeftFoot.txt.txt"
 
 RightEye_path = "../Recordings/Fall_2020/OpenBCISession_2020-10-11_16-58-40-YAN-RIGHT-EYE/OpenBCI-RAW-2020-10-11_16-59-03.txt"

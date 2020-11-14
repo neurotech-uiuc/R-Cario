@@ -4,8 +4,10 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
+from scipy.fft import fft, fftfreq
+from scipy.signal import welch
 
-class KNN(classify.Classifier):
+class KNN_FFT(classify.Classifier):
     def __init__(self, n):
         self.model = KNeighborsClassifier(n_neighbors=n, weights='distance')
 
@@ -21,9 +23,13 @@ class KNN(classify.Classifier):
 
             # channel_data: (? intervals, 190 readings/interval, 3 channels)
             channel_data = np.stack(channel_y_list, axis=-1)
+
+            channel_fft = np.abs(fft(channel_data, axis=1))
+            freqs = fftfreq(channel_data.shape[1])
+            channel_freqs = np.stack([freqs]*3, axis=1)
             
             # channel_means: (? meaned intervals, 3 channels)
-            channel_means = channel_data.mean(axis=1)
+            channel_means = (channel_freqs*channel_fft).mean(axis=1)
             
             train_size = int(0.5*channel_means.shape[0])
             #means are normalized only on training data

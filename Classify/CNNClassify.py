@@ -42,7 +42,7 @@ class CNN(classify.Classifier):
                       optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
 
-        trained = cnn1.fit(X_train, y_train,
+        trained = cnn3.fit(X_train, y_train,
               batch_size=256,
               epochs=10,
               verbose=1,

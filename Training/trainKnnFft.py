@@ -24,4 +24,7 @@ RightEye_observations = dc.getObservationSet(RightEye_path, RightEye_label_path,
 LeftEye_observations = dc.getObservationSet(LeftEye_path, LeftEye_label_path, 1000, [0,1,2], 'L_EYE')
 
 knn_fft = model.KNN_FFT(3)
-knn_fft.train([RightFoot_observations, LeftFoot_observations, RightEye_observations, LeftEye_observations])
+# knn_fft.train([RightFoot_observations, LeftFoot_observations, RightEye_observations, LeftEye_observations])
+knn_fft.train([RightFoot_observations])
+knn_fft.train([RightFoot_observations])
+knn_fft.train([RightFoot_observations])

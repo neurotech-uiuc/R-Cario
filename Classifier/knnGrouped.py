@@ -19,17 +19,20 @@ class KNN(classify.Classifier):
             # channel_y: 3 channel list -> (? intervals, 190 recordings/interval)
             channel_y_list = [np.stack(channel[0][1]) for channel in trainingData.values()]
 
-            # channel_data: (? intervals, 190 readings/interval, 3 channels)
-            channel_data = np.stack(channel_y_list, axis=-1)
+            # channel_data: (? intervals, 190 readings/interval, 3 channels) but all three channels in one element
+            channel_data = np.stack(channel_y_list, axis=1)
             
-            # channel_means: (? meaned intervals, 3 channels)
-            channel_means = channel_data.mean(axis=1)
+            # flattens all three channels into one vector
+            channel_data_merged = []
+            for elem in channel_data:
+                channel_data_merged.append(elem.flatten())
+            channel_data_merged = np.array(channel_data_merged)
+
             
-            train_size = int(0.5*channel_means.shape[0])
-            #means are normalized only on training data
-            #labels across channels should be identical
-            X = channel_means/channel_means[:train_size].std(axis=0)
-            y = trainingData[0][1]
+            train_size = int(0.5*channel_data_merged.shape[0])
+           
+            X = channel_data_merged
+            y = y = trainingData[0][1]
     
             X_train, X_test = np.split(X, [train_size])
             y_train, y_test = np.split(y, [train_size])

@@ -21,11 +21,14 @@ class KNN(classify.Classifier):
 
             # channel_data: (? intervals, 190 readings/interval, 3 channels)
             channel_data = np.stack(channel_y_list, axis=-1)
-            
+            # normalise_data = (channel_data - channel_data.mean(axis=1))/(channel_data.std(axis=1))
+            # print(normalise_data.shape)
+
             # channel_means: (? meaned intervals, 3 channels)
             channel_means = channel_data.mean(axis=1)
-            
+            # print(channel_means.shape)
             train_size = int(0.5*channel_means.shape[0])
+
             #means are normalized only on training data
             #labels across channels should be identical
             X = channel_means/channel_means[:train_size].std(axis=0)
@@ -47,17 +50,22 @@ class KNN(classify.Classifier):
 
         self.model.fit(X_train_all, y_train_all)
 
-        results = self.model.predict(X_test_all)
+        # results = self.model.predict(X_test_all)
 
-        onehot_to_int = np.array([0,1,2,3,4])
-        flat_y_test = (y_test_all*onehot_to_int).sum(axis=1)
-        flat_results = (results*onehot_to_int).sum(axis=1)
+        # onehot_to_int = np.array([0,1,2,3,4])
+        # flat_y_test = (y_test_all*onehot_to_int).sum(axis=1)
+        # flat_results = (results*onehot_to_int).sum(axis=1)
 
         # rows represent true value, columns are predicted value
-        self.confusion_matrix = confusion_matrix(flat_y_test, flat_results)
-        self.confusion_matrixNorm = confusion_matrix(flat_y_test, flat_results, normalize='true')
-        print(self.confusion_matrix)
-        print(self.confusion_matrixNorm)
+
+        # self.confusion_matrix = confusion_matrix(flat_y_test, flat_results)
+        # self.confusion_matrixNorm = confusion_matrix(flat_y_test, flat_results, normalize='true')
+        # print(self.confusion_matrix)
+        # print(self.confusion_matrixNorm)
 
     def classify(self, observation):
-        pass
+
+        observation_means = observation.mean(axis=1)
+        result = self.model.predict(observation_means)
+
+        return result

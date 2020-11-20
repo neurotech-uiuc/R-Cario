@@ -49,7 +49,21 @@ steveRE_observations = dcNew.getObservationSet(steveRE_path, steveRE_labels, 100
 
 
 # USING AVERAGE VALUE
-# knn = model.KNN(3)
+knn = model.KNN(3)
+# print("Steven-> [No Action, L_FOOT, R_FOOT, R_EYE")
+# knn.train([steveLF_observations, steveRF_observations, steveRE_observations])
+
+# print("Yan-> [No Action, L_FOOT, R_FOOT, L_EYE, R_EYE")
+# knn.train([RightFoot_observations, LeftFoot_observations, RightEye_observations, LeftEye_observations])
+
+print("COMBINED")
+knn.train([steveLF_observations, steveRF_observations, steveRE_observations, RightFoot_observations, LeftFoot_observations, RightEye_observations, LeftEye_observations])
+
+knn.saveModel("combinedKNN")
+
+
+# USING GROUPING
+# knn = knnGrouped.KNN(3)
 # print("Steven-> [No Action, L_FOOT, R_FOOT, R_EYE")
 # knn.train([steveLF_observations, steveRF_observations, steveRE_observations])
 
@@ -58,14 +72,3 @@ steveRE_observations = dcNew.getObservationSet(steveRE_path, steveRE_labels, 100
 
 # print("COMBINED")
 # knn.train([steveLF_observations, steveRF_observations, steveRE_observations, RightFoot_observations, LeftFoot_observations, RightEye_observations, LeftEye_observations])
-
-# USING GROUPING
-knn = knnGrouped.KNN(3)
-print("Steven-> [No Action, L_FOOT, R_FOOT, R_EYE")
-knn.train([steveLF_observations, steveRF_observations, steveRE_observations])
-
-print("Yan-> [No Action, L_FOOT, R_FOOT, L_EYE, R_EYE")
-knn.train([RightFoot_observations, LeftFoot_observations, RightEye_observations, LeftEye_observations])
-
-print("COMBINED")
-knn.train([steveLF_observations, steveRF_observations, steveRE_observations, RightFoot_observations, LeftFoot_observations, RightEye_observations, LeftEye_observations])

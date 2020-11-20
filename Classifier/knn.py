@@ -1,9 +1,12 @@
-import classify as classify
+from . import classify as classify
 
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
+
+import pickle 
+
 
 class KNN(classify.Classifier):
     def __init__(self, n):
@@ -46,18 +49,21 @@ class KNN(classify.Classifier):
         y_test_all = np.concatenate(y_test_all)
 
         self.model.fit(X_train_all, y_train_all)
+       
 
-        results = self.model.predict(X_test_all)
-
-        onehot_to_int = np.array([0,1,2,3,4])
-        flat_y_test = (y_test_all*onehot_to_int).sum(axis=1)
-        flat_results = (results*onehot_to_int).sum(axis=1)
-
-        # rows represent true value, columns are predicted value
-        self.confusion_matrix = confusion_matrix(flat_y_test, flat_results)
-        self.confusion_matrixNorm = confusion_matrix(flat_y_test, flat_results, normalize='true')
-        print(self.confusion_matrix)
-        print(self.confusion_matrixNorm)
+    def saveModel(self, location):
+        # Its important to use binary mode 
+        knnPickle = open(location, 'wb')
+        
+        # source, destination 
+        # pickle.dump((np.array([23.31751269 19.06549261 12.54092506]),self.model), knnPickle) 
+        pickle.dump(self.model, knnPickle) 
+    
+    def loadModel(self, location):
+        self.trainedModel = pickle.load(open(location, 'rb'))
+        # (self.trainedSTD, self.trainedModel = pickle.load(open(location, 'rb'))
 
     def classify(self, observation):
-        pass
+        #observation is in this form np.array([channel0,channel1,channel2]) where each one has 190 elems
+        # divide by model standard deviation
+        return self.trainedModel.predict(observation)

@@ -36,7 +36,7 @@ model = knn.KNN(3)
 model.loadModel("combinedKNN")
 
 #init controller
-# controller = contr.Controller(9600, '/dev/cu.HC-06-SPPDev')
+controller = contr.Controller(9600, '/dev/cu.HC-06-SPPDev')
 
 print("ATTEMPT START STREAM")
 EEG.startStream()

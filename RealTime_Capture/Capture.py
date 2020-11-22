@@ -10,9 +10,11 @@ from brainflow.data_filter import DataFilter, FilterTypes, AggOperations
 class Capture():
     # boardID = 1 for ganglion
     # serialPort : https://brainflow.readthedocs.io/en/stable/SupportedBoards.html#ganglion
-    def __init__(self, boardID, serialPort):
-        self.serialPort = serialPort
+    def __init__(self, boardID, serial_port):
+        self.serial_port = serial_port
         params = BrainFlowInputParams()
+        params.serial_port = serial_port
+        BoardShim.disable_board_logger ()
         self.board = BoardShim (boardID, params)
         self.board.prepare_session()
 
@@ -23,14 +25,15 @@ class Capture():
     # if seconds is too small, num_samples returned won't be enough
     def getData(self, num_seconds, num_samples):
         time.sleep(num_seconds)
-        data = self.board.get_current_board_data (num_samples)
+        # data = self.board.get_current_board_data (num_samples)
+        data = self.board.get_board_data()[:190]
         
         # gets 0,1,2 channel. ignore 4 b/c noise data
         return np.array([data[1], data[2], data[3]])
 
     def closeStream(self):
-        self.board.stop_stream ()
-        self.board.release_session ()
+        self.board.stop_stream()
+        self.board.release_session()
 
 # def main ():
 #     parser = argparse.ArgumentParser ()
@@ -49,16 +52,16 @@ class Capture():
 #     parser.add_argument ('--log', action = 'store_true')
 #     args = parser.parse_args ()
 
-#     params = BrainFlowInputParams ()
-#     params.ip_port = args.ip_port
-#     params.serial_port = args.serial_port
-#     params.mac_address = args.mac_address
-#     params.other_info = args.other_info
-#     params.serial_number = args.serial_number
-#     params.ip_address = args.ip_address
-#     params.ip_protocol = args.ip_protocol
-#     params.timeout = args.timeout
-#     params.file = args.file
+    # params = BrainFlowInputParams ()
+    # params.ip_port = args.ip_port
+    # params.serial_port = args.serial_port
+    # params.mac_address = args.mac_address
+    # params.other_info = args.other_info
+    # params.serial_number = args.serial_number
+    # params.ip_address = args.ip_address
+    # params.ip_protocol = args.ip_protocol
+    # params.timeout = args.timeout
+    # params.file = args.file
 
 #     if (args.log):
 #         BoardShim.enable_dev_board_logger ()

@@ -27,9 +27,11 @@ import numpy as np
 from RealTime_Capture import Capture as capt
 from RC_Controller import Controller as contr
 
+import time
+
 #setup capture module
-serialPort = "/dev/cu.usbmodem11"
-EEG = capt.Capture(1, serialPort)
+# serialPort = "/dev/cu.usbmodem11"
+# EEG = capt.Capture(1, serialPort)
 
 # init base
 model = knn.KNN(3)
@@ -37,15 +39,21 @@ model.loadModel("combinedKNN")
 
 #init controller
 controller = contr.Controller(9600, '/dev/cu.HC-06-SPPDev')
+controller.connect()
 
 print("ATTEMPT START STREAM")
-EEG.startStream()
+# EEG.startStream()
 for i in range(20): # change this loop condition to while flag 
     NUM_SAMPLES = 190
     data = EEG.getData(2, NUM_SAMPLES)
     print("Data:\n", data)
     action = model.classify(data)
     print(action)
-    controller.sendAction(action)
+    controller.sendAction(np.array([0,0,0,1,0]))
+    time.sleep(1)
+    controller.sendAction(np.array([0,0,0,0,0]))
+    break
 
-EEG.closeStream()
+controller.close()
+
+# EEG.closeStream()

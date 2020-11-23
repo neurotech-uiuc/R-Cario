@@ -30,45 +30,13 @@ class Controller():
 		else:
 			print("arduino doesnt respond")
 
+		time.sleep(.5)
 
-# import bluetooth
-
-# serverMACAddress = '98:D3:31:F7:7B:E5'
-# port = 1
-# s = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-# s.connect((serverMACAddress, port))
-# while 1:
-#     text = input() # Note change to the old (Python 2) raw_input
-#     if text == "quit":
-#     	break
-#     s.send('D')
-# s.close()
-
-# import serial
-# import time
-
-# # # Serial port parameters
-# serial_speed = 9600
-# serial_port = '/dev/cu.HC-06-SPPDev' # bluetooth shield hc-06
-
-
-# if __name__ == '__main__':
-# 	print("conecting to serial port ...")
-# 	ser = serial.Serial(serial_port, serial_speed, timeout=1)
-# 	while(1):
-# 		text = input("INPUT: ")
-# 		if text == "exit":
-# 			break
-# 		print("sending message...")
-# 		# ser.write(bytes(b'L'))
-# 		ser.write(bytes(text, 'utf-8'))
-
-# 		print("recieving message from arduino ...")
-# 		data = ser.readline()
-
-# 		if (data != ""):
-# 			print("arduino says: %s" % data)
-# 		else:
-# 			print("arduino doesnt respond")
-
-# 	print("finish program and close connection!")
+		# STOP THE ACTION 
+		self.ser.write(b'S')
+		print("recieving message from arduino ...")
+		res = self.ser.readline()
+		if (res != ""):
+			print("arduino says: %s" % res)
+		else:
+			print("arduino doesnt respond")

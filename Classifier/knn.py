@@ -35,7 +35,6 @@ class KNN(classify.Classifier):
         # Its important to use binary mode 
         knnPickle = open(location, 'wb')
         # source, destination 
-        # pickle.dump((np.array([23.31751269 19.06549261 12.54092506]),self.model), knnPickle) 
         pickle.dump(self.model, knnPickle) 
 
     def loadModel(self, location):

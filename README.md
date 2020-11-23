@@ -1,6 +1,9 @@
 # R-Cario 
-### A project by Neurotech@UIUC
-
+### A project by 
+<a href="https://uiucneurotech.web.illinois.edu/">
+<span style="color:lightgreen">Neurotech</span>
+@
+<span style="color:lightblue">UIUC</span>.</a>
 
 
 # Background Information

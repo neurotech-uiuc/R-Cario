@@ -108,7 +108,14 @@ def groupbyInterval(data, labels, interval, actionType):
 		if labels[lnum] < cutoff_time:
 			l_groups[ind] = ACTION
 			lnum+=1
-	
+	actions = np.where(x != NO_ACTION)[0]
+	start = actions[0]
+	end = actions[-1]
+	x_groups = x_groups[start:end]
+	y_groups = y_groups[start:end]
+	t_groups = t_groups[start:end]
+	l_groups = l_groups[start:end]
+		
 	return (x_groups, y_groups, t_groups), l_groups
 
 

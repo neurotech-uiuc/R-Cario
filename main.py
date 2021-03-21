@@ -34,12 +34,14 @@ serialPort = "/dev/cu.usbmodem11"
 EEG = capt.Capture(1, serialPort)
 
 # init base
+print("LOADING MODEL")
 model = knn.KNN(3)
 model.loadModel("combinedKNN")
+print("LOADED MODEL")
 
 #init controller
-controller = contr.Controller(9600, '/dev/cu.HC-06-SPPDev')
-controller.connect()
+# controller = contr.Controller(9600, '/dev/cu.HC-06-SPPDev')
+# controller.connect()
 
 print("ATTEMPT START STREAM")
 EEG.startStream()
@@ -49,8 +51,8 @@ for i in range(20): # change this loop condition to while flag
     print("Data:\n", data)
     action = model.classify(data)
     print(action)
-    controller.sendAction(action)
+    # controller.sendAction(action)
 
-controller.close()
+# controller.close()
 
 EEG.closeStream()

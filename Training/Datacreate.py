@@ -72,6 +72,11 @@ def getLabel(path):
 		
 	
 def groupbyInterval(data, labels, interval, actionType):
+
+	# before grouping, remove the extraneous data
+	# remove all data before first label
+	# remove all data before last label
+
 	#data tuple (x,y,z). labels: datetimes. interval(ms): int
 	x,y,t = data
 	interval_ms = timedelta(milliseconds=interval)
@@ -83,6 +88,8 @@ def groupbyInterval(data, labels, interval, actionType):
 		if time >= cutoff_times[-1]:
 			split_inds.append(ind)
 			cutoff_times.append(cutoff_times[-1] + interval_ms)
+			
+
 	
 	x_groups = np.array(np.split(x, split_inds))
 	y_groups = np.array(np.split(y, split_inds))
@@ -108,6 +115,16 @@ def groupbyInterval(data, labels, interval, actionType):
 			l_groups[ind] = ACTION
 			lnum+=1
 	
+	#cut off extraneous occurences
+	#inneficient but for now it works
+	actions = np.where(x != NO_ACTION)[0]
+	start = actions[0]
+	end = actions[-1]
+	x_groups = x_groups[start:end]
+	y_groups = y_groups[start:end]
+	t_groups = t_groups[start:end]
+	l_groups = l_groups[start:end]
+
 	return (x_groups, y_groups, t_groups), l_groups
 
 

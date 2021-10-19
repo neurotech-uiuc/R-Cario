@@ -34,12 +34,12 @@ def getTitle(recordingFile):
 
 # pass none if dont want granularity
 # pass none to dataLimit if want all the data
-def getData(path, granularity, channel, dataLimit):
-
+def getData(path, granularity, channels, dataLimit):
 	dataRaw = []
 	dataStartLine = 6
 	count = 0
-	for line in open(path, 'r').readlines(): 
+	with open(path, 'r') as data_file:
+		for line in data_file:
 			if count >= dataStartLine:
 					dataRaw.append(line.strip().split(','))
 			else:
@@ -55,40 +55,55 @@ def getData(path, granularity, channel, dataLimit):
 	if dataLimit is None:
 		dataLimit = len(dataChannels)
 
-	channelData = dataChannels[:,channel][:dataLimit:granularity]
-	y = channelData.astype(float)
-	x = np.arange(len(channelData))
-	t = [datetime.strptime(time,'%H:%M:%S.%f') for time in timeChannels]
-	return x,y,t
+	channelData = dataChannels[:,channels][:dataLimit:granularity].transpose()
+	y_channels = channelData.astype(float)
+	inds = np.arange(channelData.shape[1])
+	t = np.array([datetime.strptime(time,'%H:%M:%S.%f') for time in timeChannels])
+	return y_channels,inds,t
 
 def getLabel(path):
-	dataRaw = []
+	labels = []
 	with open(path, 'r') as label_file:
 		for line in label_file:
 			dt_obj = datetime.strptime(line.strip(),'%H:%M:%S.%f')
-			dataRaw.append(dt_obj)
-	return dataRaw
-	
-		
+			labels.append(dt_obj)
+	return labels
 	
 def groupbyInterval(data, labels, interval, actionType):
 	#data tuple (x,y,z). labels: datetimes. interval(ms): int
-	x,y,t = data
+	y_channels,inds,t = data
 	interval_ms = timedelta(milliseconds=interval)
 	
 	split_inds = []
 	cutoff_times = [t[0]+interval_ms]
-	for ind in range(len(t)):
+	for ind in range(t.shape[0]):
 		time = t[ind]
 		if time >= cutoff_times[-1]:
 			split_inds.append(ind)
 			cutoff_times.append(cutoff_times[-1] + interval_ms)
 	
-	x_groups = np.array(np.split(x, split_inds))
-	y_groups = np.array(np.split(y, split_inds))
-	t_groups = np.array(np.split(t, split_inds))
-	# l_groups = np.zeros(len(x_groups), dtype=bool)
+	ind_groups = np.split(inds, split_inds)
+	y_channels_groups = np.split(y_channels, split_inds, axis=1)
+	t_groups = np.split(t, split_inds)
 
+	#find min group size
+	min_group_size = ind_groups[0].shape[0]
+	for i in range(len(split_inds)-1):
+		if ind_groups[i].shape[0] < min_group_size:
+			min_group_size = ind_groups[i].shape[0]
+
+	#rectangularize jagged arrays
+	for i in range(len(split_inds)):
+		ind_groups[i] = ind_groups[i][:min_group_size]
+		y_channels_groups[i] = y_channels_groups[i][:,:min_group_size]
+		t_groups[i] = t_groups[i][:min_group_size]
+
+	#drop short last group
+	ind_groups = np.array(ind_groups[:-1])
+	y_channels_groups = np.array(y_channels_groups[:-1]).transpose((1,0,2))
+	t_groups = np.array(t_groups[:-1])
+
+	#assign labels to groups
 	NO_ACTION = 0
 	ACTION = 1
 
@@ -96,7 +111,7 @@ def groupbyInterval(data, labels, interval, actionType):
 		NO_ACTION = getOneHot("NONE")
 		ACTION = getOneHot(actionType)
 		
-	l_groups = np.array([NO_ACTION] * len(x_groups))
+	l_groups = np.array([NO_ACTION] * ind_groups.shape[0])
 	
 	lnum=0
 	for ind in range(len(cutoff_times)):
@@ -108,60 +123,18 @@ def groupbyInterval(data, labels, interval, actionType):
 			l_groups[ind] = ACTION
 			lnum+=1
 	
-	return (x_groups, y_groups, t_groups), l_groups
+	return y_channels_groups, ind_groups, t_groups, l_groups
 
-
-def return_millisecond_timestamps(labels):
-	#return 1 or 0
-	x = []
-	for timestamp in labels:
-		dt_obj = datetime.strptime(timestamp,'%H:%M:%S.%f')
-		millisec = dt_obj.timestamp()*1000
-				
-		x.append(millisec)
-	
-	return x
-
-
-def standardise_observations(grouped_data, group_contains_label):
-
-	REQ_NUM_PTS = 190
-
-	x_groups,y_groups,t_groups = grouped_data
-	l_groups = group_contains_label
-
-	#remove all instances where not enough sample pints
-	i = 0
-	while i < len(y_groups):
-		if len(y_groups[i]) < REQ_NUM_PTS:
-			x_groups = np.delete(x_groups, i)
-			y_groups = np.delete(y_groups, i)
-			t_groups = np.delete(t_groups, i)
-			l_groups = np.delete(l_groups, i, 0)
-		else:
-			i = i+1
-
-	# limit to required observations
-	for i in range(len(x_groups)):
-		x_groups[i] = x_groups[i][:REQ_NUM_PTS]
-		y_groups[i] = y_groups[i][:REQ_NUM_PTS]
-		t_groups[i] = t_groups[i][:REQ_NUM_PTS]
-
-	return (x_groups, y_groups, t_groups), l_groups
 
 #THIS IS THE MAIN METHOD FOR INTERACTION
 # Inputs:
 # datafile, labelfile, interval, channels requested
-def getObservationSet(dataPath, labelPath, interval, channels, actionType):
-	observationSet = {}
-	for channel in channels:
-		data = getData(dataPath, None, channel, None)
-		action_times = getLabel(labelPath)
-		observations = groupbyInterval(data, action_times, interval, actionType)
-		observations = standardise_observations(observations[0], observations[1])
-		observationSet[channel] = observations
+def getObservations(dataPath, labelPath, interval, channels, actionType):
+	data = getData(dataPath, None, channels, None)
+	action_times = getLabel(labelPath)
+	observations = groupbyInterval(data, action_times, interval, actionType)
 	
-	return observationSet
+	return observations
 
 
 

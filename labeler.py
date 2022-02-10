@@ -15,12 +15,17 @@ from datetime import datetime, timedelta
 import requests
 import math
 
-def labelLine(line, labels, startTime,startTimeDelta):
+def labelLine(line, labels, startTime):
     time = datetime.fromisoformat(line[len(line)-1])
-    duration = time - startTimeDelta - startTime
+    duration = time - startTime
     seconds = duration.total_seconds()
     line.append(seconds)
     line.append(labels[int(seconds)])
+    if (time < startTime):
+        return none
+
+    print(time)
+
     return line
 
 
@@ -38,9 +43,9 @@ def getData(path,labels,startTime):
             if (count == 5):
                 time = datetime.fromisoformat(lineArr[len(lineArr)-1])
                 startTimeDelta = time - startTime
-
-            lineArr = labelLine(lineArr,labels,startTime,startTimeDelta)
-            data.append(lineArr)
+            lineArr = labelLine(lineArr,labels,startTime)
+            if (lineArr != None):
+                data.append(lineArr)
         else:
             count += 1
     

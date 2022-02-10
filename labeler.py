@@ -19,13 +19,11 @@ def labelLine(line, labels, startTime):
     time = datetime.fromisoformat(line[len(line)-1])
     duration = time - startTime
     seconds = duration.total_seconds()
+    line = line[1:5]
     line.append(seconds)
     line.append(labels[int(seconds)])
     if (time < startTime):
-        return none
-
-    print(time)
-
+        return None
     return line
 
 
@@ -73,13 +71,13 @@ def getLabels(path):
     realDate = datetime.fromisoformat(date)
     dataRaw = np.char.strip(np.array(dataRaw))
     print(realDate)
-    for x in dataRaw:
-        print(x)
+    # for x in dataRaw:
+    #     print(x)
 
     data = []
     data.append(realDate)
     data.append(dataRaw)
-    print(count-1)
+    # print(count-1)
     return data
 
 data = getLabels("JawClench_labels_Ansh_12-02-21-1918.txt")
@@ -87,6 +85,7 @@ startTime = data[0]
 labels = data[1]
 data = getData("OpenBCI-RAW-2021-12-02_19-19-53.txt",labels,startTime)
 
-print(data[1][len(data[0])-1])
+print(data[1700])
+
 
 

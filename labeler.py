@@ -20,7 +20,7 @@ def labelLine(line, labels, startTime):
     duration = time - startTime
     seconds = duration.total_seconds()
     line = line[1:5]
-    line.append(seconds)
+    # line.append(seconds)
     line.append(labels[int(seconds)])
     if (time < startTime):
         return None

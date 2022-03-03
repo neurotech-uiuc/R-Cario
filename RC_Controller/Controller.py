@@ -3,9 +3,9 @@ import serial
 import time
 import numpy as np
 class Controller():
-	def __init__(self, serial_speed, serial_port):
-		self.serial_speed = serial_speed
+	def __init__(self, serial_port, serial_speed):
 		self.serial_port = serial_port
+		self.serial_speed = serial_speed
 	
 	def connect(self):
 		self.ser = serial.Serial(self.serial_port, self.serial_speed, timeout=1)

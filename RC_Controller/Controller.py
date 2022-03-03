@@ -22,6 +22,7 @@ class Controller():
 		elif actionInt == 4: # R_EYE
 			actionLabel = "D"
 		
+		print("sending action: %s" % actionLabel)
 		self.ser.write(bytes(actionLabel, 'utf-8'))
 		print("recieving message from arduino ...")
 		res = self.ser.readline()

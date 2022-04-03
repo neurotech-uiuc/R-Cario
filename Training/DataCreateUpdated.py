@@ -10,7 +10,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 # define example
-labels = {'NONE' : 0,  'JAW_CLENCH' : 1, 'L_EYE' : 2, 'R_EYE' : 3, 'BROW_UP' : 4, 'BROW_DOWN': 5}
+labels = {'NONE' : 0,  'L_EYE' : 1, 'R_EYE' : 2, 'JAW_CLENCH' : 3, 'BROW_UP' : 4, 'BROW_DOWN': 5}
 labelInts = np.array([0, 1, 2, 3, 4, 5])
 # integer encode
 label_encoder = LabelEncoder()

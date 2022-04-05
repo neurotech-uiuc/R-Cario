@@ -28,6 +28,7 @@ def labelLine(line, labels, startTime):
 
 
 def getData(path,labels,startTime):
+    print("9")
     data = []
     count = 0
     # Gets difference between startTime and time of first data point and eventually subtracts that difference from the data points
@@ -44,8 +45,12 @@ def getData(path,labels,startTime):
             lineArr = labelLine(lineArr,labels,startTime)
             if (lineArr != None):
                 data.append(lineArr)
+                print(lineArr)
+                
         else:
             count += 1
+        
+
     
     return data
 

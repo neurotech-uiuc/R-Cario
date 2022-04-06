@@ -3,7 +3,7 @@ from FeatureExtractFunctions import getMean, getMeanSquaredDeviation, getMeanAbs
 
 functsList = [getMean, getMeanSquaredDeviation, getMeanAbsDeviation, getSpreadPercentile, getPercentile10, getPercentile90]
 
-def pre_process(y_channels_groups, mean, stdev):
+def preprocess(y_channels_groups, mean, stdev):
     fX = None
     for funct in functsList:
         if fX is not None:

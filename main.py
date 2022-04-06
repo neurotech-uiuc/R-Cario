@@ -22,10 +22,10 @@
 
 """
 from Classifier import knn as knn
-from Training import Datacreate as dc
 import numpy as np
 from RealTime_Capture import Capture as capt
 from RC_Controller import Controller as contr
+from Training import Preprocess as processing
 
 import time
 
@@ -47,7 +47,8 @@ for i in range(20): # change this loop condition to while flag
     NUM_SAMPLES = 190
     data = EEG.getData(2, NUM_SAMPLES)
     print("Data:\n", data)
-    action = model.classify(data)
+    processed_data = processing.preprocess(data)
+    action = model.classify(processed_data)
     print(action)
     controller.sendAction(action)
 

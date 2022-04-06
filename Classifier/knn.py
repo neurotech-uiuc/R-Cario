@@ -10,6 +10,7 @@ class KNN(classify.Classifier):
     def __init__(self, n):
         self.model = KNeighborsClassifier(n_neighbors=n, weights='distance')
 
+    # TODO: Need to update this
     def train(self, trainingSets):
         # make four empty numpy arrays
         X_train_all, X_test_all, y_train_all, y_test_all = [[],[],[],[]]
@@ -41,7 +42,5 @@ class KNN(classify.Classifier):
         self.trainedModel = pickle.load(open(location, 'rb'))
 
     def classify(self, observation):
-        observation_means = observation.mean(axis=1).reshape(1,-1)
-        print(observation_means)
-        result = self.trainedModel.predict(observation_means)
+        result = self.trainedModel.predict(observation)
         return result[0]

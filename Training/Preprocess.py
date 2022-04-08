@@ -1,5 +1,5 @@
 import numpy as np
-from FeatureExtractFunctions import getMean, getMeanSquaredDeviation, getMeanAbsDeviation, getSpreadPercentile, getPercentile10, getPercentile90
+from Training.FeatureExtractFunctions import *
 
 functsList = [getMean, getMeanSquaredDeviation, getMeanAbsDeviation, getSpreadPercentile, getPercentile10, getPercentile90]
 

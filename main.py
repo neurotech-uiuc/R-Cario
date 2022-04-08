@@ -21,7 +21,7 @@
 
 
 """
-from Classifier import knn as knn
+from Classifier import GBDecisionTree as gbdt
 import numpy as np
 from RealTime_Capture import Capture as capt
 from RC_Controller import Controller as contr
@@ -34,8 +34,11 @@ serialPort = "/dev/cu.usbmodem11"
 EEG = capt.Capture(1, serialPort)
 
 # init base
-model = knn.KNN(3)
-model.loadModel("combinedKNN")
+kc = gbdt.GBDecisionTree()
+ac = gbdt.GBDecisionTree()
+
+kc.loadModel("prod_action_XGB.joblib")
+ac.loadModel("prod_non_selector_XGB.joblib")
 
 #init controller
 controller = contr.Controller(9600, '/dev/cu.HC-06-SPPDev')
@@ -48,7 +51,7 @@ for i in range(20): # change this loop condition to while flag
     data = EEG.getData(2, NUM_SAMPLES)
     print("Data:\n", data)
     processed_data = processing.preprocess(data)
-    action = model.classify(processed_data)
+    action = np.multiply((1-ac.predict(processed_data)), kc.predict(processed_data))
     print(action)
     controller.sendAction(action)
 

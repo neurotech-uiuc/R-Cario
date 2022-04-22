@@ -1,3 +1,12 @@
+"""
+
+Outputs random ones and zeros corresponding to actions for 60 seconds. (first 5 and last 5 are zero)
+
+Should be done with data collection from external EEG software. 
+
+
+"""
+
 import time
 import random
 from datetime import datetime

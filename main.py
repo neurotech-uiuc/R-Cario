@@ -37,12 +37,13 @@ EEG = capt.Capture(1, serialPort)
 kc = gbdt.GBDecisionTree()
 ac = gbdt.GBDecisionTree()
 
-kc.loadModel("C:\\Users\\Sam\\workspace\\R-Cario\\Classifier\\Saved_Models\\prod_action_XGB.joblib")
-ac.loadModel("C:\\Users\\Sam\\workspace\\R-Cario\\Classifier\\Saved_Models\\prod_non_selector_XGB.joblib")
+kc.loadModel("C:\\Users\\Sam\\workspace\\R-Cario\\Classifier\\Saved_Models\\KNN\\bestactionclassifier.joblib")
+ac.loadModel("C:\\Users\\Sam\\workspace\\R-Cario\\Classifier\\Saved_Models\\KNN\\bestnaclassifier.joblib")
 
 #init controller
 controller = contr.Controller(9600, 'COM6')
 controller.connect()
+
 
 means = np.array([[1105.78098721,  251.60192246, 1193.51012919,  890.36304615], [93862.20476045,  7523.20183377, 10938.9161295 , 72701.30213732], [77.96145519, 36.8555236 , 43.23477836, 71.08503054], [288.06211688, 137.16852437, 161.36465859, 252.03221684], [ 986.80093244,  199.43441507, 1133.65463523,  785.98859685], [1228.4993809 ,  309.98865681, 1263.11065848,  999.94915174]]).reshape((1,24))
 stdevs = np.array([[701.29549086, 239.65263425, 405.58976194, 537.98950971], [715355.86582232,  30093.86588465,  39312.62294731, 754404.82304548], [249.85177453,  61.95052414,  74.49602556, 227.85183245], [876.03955793, 205.47179985, 254.5675518 , 707.79059043], [734.51799699, 228.73940395, 390.71919533, 597.50667836], [897.69540362, 283.07204045, 450.41051538, 695.1011759 ]]).reshape((1,24))
@@ -54,7 +55,7 @@ for i in range(20): # change this loop condition to while flag
     print("Data Shape:\n", data.shape)
     print("Data:\n", data)
     processed_data = processing.preprocess(data.reshape(4,1,-1), means, stdevs)
-    action = np.multiply((1-ac.classify(processed_data)), kc.classify(processed_data))
+    action = np.multiply((1-ac.classify(processed_data[:,::2])), kc.classify(processed_data[:,::2]))
     print(action)
     controller.sendAction(action)
 

@@ -1,6 +1,21 @@
 import time
 import random
 from datetime import datetime
+
+"""
+Collect.py:
+
+Generates an array of 70 1s and 0s corresponding to action and no action respectively.
+
+First and last 5 numbers are 0, the rest are random.
+
+Then, it iterates through it one second at a time, with the one corresponding to when the user should blink. 
+
+User should start collecting using the external EEG software to collect data. 
+
+Then, the start times should be lined up.
+
+"""
 arr = []
 arr.append(0)
 arr.append(0)

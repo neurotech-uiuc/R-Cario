@@ -6,8 +6,7 @@ class Controller():
 	def __init__(self, serial_speed, serial_port):
 		self.serial_speed = serial_speed
 		self.serial_port = serial_port
-		self.moving_forward = False
-		self.moving_backward = False
+		self.moving = False
 		self.turning = False
 		self.moving_time = 0
 		self.MAX_MOVE_TIME = 10
@@ -34,6 +33,7 @@ class Controller():
 			self.moving_time = 0
 			actionLabel = "R"
 			self.turning = True
+
 		elif actionInt == 2: # R_EYE
 			self.sendStopAction()
 			self.moving_time = 0
@@ -41,35 +41,34 @@ class Controller():
 			self.turning = True
 
 		elif actionInt == 3: # JAW_CLENCH
-			if (self.moving_backward):
-				self.sendStopAction()
-			if (self.moving_forward):
+			if (self.moving):
 				actionLabel = "S"
-				self.moving_forward = False
+				self.moving = False
 				self.moving_time = 0
 			else:
 				actionLabel = "U" 
-				self.moving_forward = True
+				self.moving = True
 				self.moving_time += 1
 
 		elif actionInt == 4: # EYEBROW_RAISE
-			if (self.moving_forward):
+			if (self.moving):
 				self.sendStopAction()
-			if (self.moving_backward):
-				actionLabel = "S"
-				self.moving_backward = False
+				self.moving = False
 				self.moving_time = 0
-			else:
-				actionLabel = "D"
-				self.moving_backward = True
-				self.moving_time += 1
+			actionLabel = "H"
 
-		# keeps car moving if no action is presented
-		if (self.moving_forward or self.moving_backward and actionLabel == "S"):
+		elif actionInt == 5: # EYEBROW_DOWN
+			if (self.moving):
+				self.sendStopAction()
+				self.moving = False
+				self.moving_time = 0
+			actionLabel = "G"
+		
+		# keeps car moving if not prompted to stop
+		if (self.moving and actionLabel == "S"):
 			if (self.moving_time > self.MAX_MOVE_TIME):
 				self.sendStopAction()
-				self.moving_backward = False
-				self.moving_forward = False
+				self.moving = False
 				self.moving_time = 0
 			else:
 				self.moving_time += 1
@@ -88,6 +87,9 @@ class Controller():
 			time.sleep(0.5)
 			self.sendStopAction()
 			self.turning = False
+		
+		if (self.moving):
+			time.sleep(0.1)
 
 	
 	def sendStopAction(self):

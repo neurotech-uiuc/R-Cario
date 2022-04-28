@@ -49,7 +49,7 @@ stdev = np.zeros((14, 4))
 
 print("(BLINK RIGHT EYE, BLINK LEFT EYE, CLENCH JAW, UNCLENCH JAW, RAISE EYEBROWS, LOWER EYEBROS) #REPEAT ONCE MORE")
 NUM_SAMPLES = 2280
-data = EEG.getData(2, NUM_SAMPLES)
+data = EEG.getData(12, NUM_SAMPLES)
 calibrated_data = processing.calibration(data.reshape(4,1,-1))
 means = calibrated_data[0]
 stdevs = calibrated_data[1]
@@ -59,7 +59,8 @@ print("ATTEMPT START STREAM")
 EEG.startStream()
 for i in range(20): # change this loop condition to while flag 
     NUM_SAMPLES = 190
-    data = EEG.getData(2, NUM_SAMPLES)
+    data = EEG.getData(1, NUM_SAMPLES)
+    print("Data Shape:\n", data.shape)
     print("Data:\n", data)
     action = model.classify(data)
     print(action)

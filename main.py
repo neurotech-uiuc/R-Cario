@@ -51,7 +51,7 @@ print("ATTEMPT START STREAM")
 EEG.startStream()
 for i in range(20): # change this loop condition to while flag 
     NUM_SAMPLES = 190
-    data = EEG.getData(2, NUM_SAMPLES)
+    data = EEG.getData(1, NUM_SAMPLES)
     print("Data Shape:\n", data.shape)
     print("Data:\n", data)
     processed_data = processing.preprocess(data.reshape(4,1,-1), means, stdevs)

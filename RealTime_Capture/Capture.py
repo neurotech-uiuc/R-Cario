@@ -28,8 +28,8 @@ class Capture():
         # data = self.board.get_current_board_data (num_samples)
         data = self.board.get_board_data()[:190]
         
-        # gets 0,1,2 channel. ignore 4 b/c noise data
-        return np.array([data[1], data[2], data[3]])
+        # gets 0,1,2,3 channel
+        return np.array([data[1], data[2], data[3], data[4]])
 
     def closeStream(self):
         self.board.stop_stream()

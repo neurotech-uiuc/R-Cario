@@ -10,8 +10,8 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 # define example
-labels = {'NONE' : 0,  'L_FOOT' : 1, 'R_FOOT' : 2, 'L_EYE' : 3, 'R_EYE' : 4}
-labelInts = np.array([0, 1, 2, 3, 4])
+labels = {'NONE' : 0,  'L_EYE' : 1, 'R_EYE' : 2, 'JAW_CLENCH' : 3, 'BROW_UP' : 4, 'BROW_DOWN': 5}
+labelInts = np.array([0, 1, 2, 3, 4, 5])
 # integer encode
 label_encoder = LabelEncoder()
 integer_encoded = label_encoder.fit_transform(labelInts)
@@ -47,7 +47,7 @@ def getData(path, granularity, channels, dataLimit):
 	dataRaw = np.char.strip(np.array(dataRaw))
 
 	dataChannels = dataRaw[:, 1:5]
-	timeChannels = dataRaw[:, 8]
+	timeChannels = dataRaw[:, 15]
 
 	if granularity is None:
 		granularity = 1
@@ -58,16 +58,29 @@ def getData(path, granularity, channels, dataLimit):
 	channelData = dataChannels[:,channels][:dataLimit:granularity].transpose()
 	y_channels = channelData.astype(float)
 	inds = np.arange(channelData.shape[1])
-	t = np.array([datetime.strptime(time,'%H:%M:%S.%f') for time in timeChannels])
+	t = np.array([datetime.strptime(time[11:],'%H:%M:%S.%f') for time in timeChannels])
 	return y_channels,inds,t
 
 def getLabel(path):
-	labels = []
+	dataRaw = []
+	first = True
+	basetime = None
 	with open(path, 'r') as label_file:
 		for line in label_file:
-			dt_obj = datetime.strptime(line.strip(),'%H:%M:%S.%f')
-			labels.append(dt_obj)
-	return labels
+			if(first):
+				dt_obj = datetime.strptime(line[11:].strip(),'%H:%M:%S.%f')
+				basetime = dt_obj
+				# dataRaw.append(dt_obj)
+				first = False
+			else:
+				dr = np.char.strip(np.array(line[1:-1].split(", ")))
+				# print(dr)
+				for i in range(len(dr)):
+					if dr[i] == '1':
+						dataRaw.append(basetime + timedelta(seconds=i))
+	# print(dataRaw)
+	return dataRaw
+
 	
 def groupbyInterval(data, labels, interval, actionType):
 	#data tuple (x,y,z). labels: datetimes. interval(ms): int
@@ -135,6 +148,7 @@ def getObservations(dataPath, labelPath, interval, channels, actionType):
 	observations = groupbyInterval(data, action_times, interval, actionType)
 	
 	return observations
+
 
 
 
